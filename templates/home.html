@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Home</title>
+</head>
+<body>
+
+<h1>All Blogs</h1>
+
+<a href="/create">Create Post</a> |
+<a href="/logout">Logout</a>
+
+<hr>
+
+{% for post in posts %}
+    <h2>{{ post[1] }}</h2>
+    <p>{{ post[2] }}</p>
+    <small>{{ post[4] }}</small><br>
+    <a href="/delete/{{ post[0] }}">Delete</a>
+    <hr>
+{% endfor %}
+
+</body>
+</html>
