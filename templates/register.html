@@ -1,9 +1,35 @@
-<h2>Register</h2>
-<form method="POST">
-    Username: <input type="text" name="username"><br><br>
-    Email: <input type="text" name="email"><br><br>
-    Password: <input type="password" name="password"><br><br>
-    <button type="submit">Register</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register — The Ledger</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-<a href="/login">Login</a>
+<header class="masthead">
+    <p class="wordmark">The Ledger</p>
+    <p class="tagline">entries, in order</p>
+</header>
+
+<main class="page">
+    <div class="form-card">
+        <h2>Create an account</h2>
+        <form method="POST">
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button class="btn" type="submit">Register</button>
+        </form>
+        <p class="form-footer">Already have an account? <a href="/login">Login</a></p>
+    </div>
+</main>
+
+</body>
+</html>

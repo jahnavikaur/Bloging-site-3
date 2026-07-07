@@ -1,24 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Blog Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ledger — Blog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h1>All Blogs</h1>
+<header class="masthead">
+    <p class="wordmark">The Ledger</p>
+    <p class="tagline">entries, in order</p>
+</header>
 
-<a href="/create">Create Post</a> |
-<a href="/logout">Logout</a>
+<nav class="nav-bar">
+    <a href="/create">+ New Entry</a>
+    <a href="/logout">Logout</a>
+</nav>
 
-<hr>
-
-{% for post in posts %}
-    <h2>{{ post[1] }}</h2>
-    <p>{{ post[2] }}</p>
-    <small>{{ post[4] }}</small><br>
-    <a href="/delete/{{ post[0] }}">Delete</a>
-    <hr>
-{% endfor %}
+<main class="page">
+    {% if posts %}
+    <div class="entry-list">
+        {% for post in posts %}
+        <article class="entry">
+            <div class="entry-date">{{ post[4] }}</div>
+            <div>
+                <h2 class="entry-title">{{ post[1] }}</h2>
+                <p class="entry-body">{{ post[2] }}</p>
+                <a class="entry-delete" href="/delete/{{ post[0] }}">DELETE</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No entries yet — write your first one.</p>
+    {% endif %}
+</main>
 
 </body>
 </html>

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="statics")
 app.secret_key = "secret123"
 
 # Database connection
@@ -40,12 +40,11 @@ def home():
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        email = request.form['email']
         password = request.form['password']
 
         conn = get_db()
-        conn.execute("INSERT INTO users (username,email,password) VALUES (?,?,?)",
-                     (username,email,password))
+        conn.execute("INSERT INTO users (username,password) VALUES (?,?)",
+                     (username,password))
         conn.commit()
         return redirect('/login')
 
@@ -55,12 +54,12 @@ def register():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
 
         conn = get_db()
-        user = conn.execute("SELECT * FROM users WHERE email=? AND password=?",
-                            (email,password)).fetchone()
+        user = conn.execute("SELECT * FROM users WHERE username=? AND password=?",
+                            (username,password)).fetchone()
 
         if user:
             session['user_id'] = user[0]
@@ -87,7 +86,7 @@ def create():
 
         conn = get_db()
         conn.execute("INSERT INTO posts (title,content,user_id,date) VALUES (?,?,?,?)",
-                     (title,content,user_id,datetime.now()))
+                     (title,content,user_id,datetime.now().strftime('%b %d, %Y · %I:%M %p')))
         conn.commit()
         return redirect('/')
 
