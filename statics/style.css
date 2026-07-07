@@ -200,6 +200,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 .form-footer { margin-top: 1.5rem; font-size: 0.9rem; color: var(--ink-soft); }
 
+.form-error {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--rust);
+  background: rgba(193, 90, 62, 0.08);
+  border: 1px solid rgba(193, 90, 62, 0.3);
+  border-radius: 3px;
+  padding: 0.75rem 1rem;
+  margin: -0.5rem 0 1.5rem;
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 480px) {

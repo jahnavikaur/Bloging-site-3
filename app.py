@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_folder="statics")
 app.secret_key = "secret123"
@@ -14,7 +15,7 @@ def create_tables():
     conn = get_db()
     conn.execute('''CREATE TABLE IF NOT EXISTS users(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT,
+                    username TEXT UNIQUE,
                     email TEXT,
                     password TEXT)''')
 
@@ -38,34 +39,42 @@ def home():
 # Register
 @app.route('/register', methods=['GET','POST'])
 def register():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        hashed_password = generate_password_hash(password)
 
         conn = get_db()
-        conn.execute("INSERT INTO users (username,password) VALUES (?,?)",
-                     (username,password))
-        conn.commit()
-        return redirect('/login')
+        try:
+            conn.execute("INSERT INTO users (username,password) VALUES (?,?)",
+                         (username,hashed_password))
+            conn.commit()
+            return redirect('/login')
+        except sqlite3.IntegrityError:
+            error = "That username is already taken. Please choose another."
 
-    return render_template("register.html")
+    return render_template("register.html", error=error)
 
 # Login
 @app.route('/login', methods=['GET','POST'])
 def login():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
         conn = get_db()
-        user = conn.execute("SELECT * FROM users WHERE username=? AND password=?",
-                            (username,password)).fetchone()
+        user = conn.execute("SELECT * FROM users WHERE username=?",
+                            (username,)).fetchone()
 
-        if user:
+        if user and check_password_hash(user[3], password):
             session['user_id'] = user[0]
             return redirect('/')
-    
-    return render_template("login.html")
+        else:
+            error = "Incorrect username or password."
+
+    return render_template("login.html", error=error)
 
 # Logout
 @app.route('/logout')
