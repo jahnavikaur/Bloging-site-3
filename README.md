@@ -10,7 +10,9 @@ A minimal blogging platform built with Flask — write it down, date it, publish
 
 ## ✨ What it does
 
-- 🔐 **Register & login** — simple username/password accounts, no email required
+- 🔐 **Register & login** — username/password accounts, no email required
+- 🔒 **Hashed passwords** — passwords are hashed with Werkzeug's security helpers, never stored in plain text
+- 🧑‍💻 **Unique usernames** — enforced at the database level, with a friendly error if a name's already taken
 - ✍️ **Write entries** — a distraction-free form for title + content
 - 🗓️ **Auto-dated posts** — every entry is timestamped the moment it's published
 - 🗑️ **Delete entries** — clean up posts you no longer want live
@@ -23,6 +25,7 @@ A minimal blogging platform built with Flask — write it down, date it, publish
 | Layer      | Choice                          |
 |------------|----------------------------------|
 | Backend    | Flask (Python)                  |
+| Auth       | Werkzeug security (password hashing) |
 | Database   | SQLite                          |
 | Templating | Jinja2                          |
 | Styling    | Hand-written CSS (`statics/style.css`) — Fraunces, Source Sans 3, JetBrains Mono |
@@ -64,13 +67,14 @@ python app.py
 
 Then open **http://127.0.0.1:5000** — register an account, log in, and start writing.
 
+> ⚠️ **Upgrading from an older copy of this repo?** The `users` table schema changed (unique usernames + hashed passwords). Delete your existing `database.db` before running `app.py` again so it can rebuild with the new schema — old plain-text passwords can't be hashed retroactively, so you'll need to re-register any test accounts.
+
 ---
 
 ## 🗺️ Roadmap
 
 Things this ledger could grow into, roughly in order of "quick win" → "genuinely advanced":
 
-- [ ] Hash passwords instead of storing them in plain text
 - [ ] Edit existing posts (currently create/delete only)
 - [ ] Show the author's name on each post + restrict delete/edit to the post's own author
 - [ ] Individual post pages (`/post/<id>`) with shareable URLs
@@ -79,6 +83,7 @@ Things this ledger could grow into, roughly in order of "quick win" → "genuine
 - [ ] Image uploads for post covers
 - [ ] Pagination for the home feed
 - [ ] Flash messages for login/post feedback
+- [ ] Move `app.secret_key` out of source code into an environment variable
 - [ ] Deploy to Render / Railway / PythonAnywhere
 
 ---
