@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, g
 import sqlite3
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,13 +6,24 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__, static_folder="statics")
 app.secret_key = "secret123"
 
-# Database connection
+# Database connection — one connection per request, reused across the
+# request and closed automatically when the request ends. The timeout
+# tells SQLite to wait (instead of erroring immediately) if the file is
+# briefly locked by another connection.
 def get_db():
-    return sqlite3.connect("database.db")
+    if 'db' not in g:
+        g.db = sqlite3.connect("database.db", timeout=10)
+    return g.db
+
+@app.teardown_appcontext
+def close_db(exception=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
 
 # Create tables automatically
 def create_tables():
-    conn = get_db()
+    conn = sqlite3.connect("database.db", timeout=10)
     conn.execute('''CREATE TABLE IF NOT EXISTS users(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE,
@@ -26,6 +37,7 @@ def create_tables():
                     user_id INTEGER,
                     date TEXT)''')
     conn.commit()
+    conn.close()
 
 create_tables()
 
