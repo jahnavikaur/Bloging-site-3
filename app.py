@@ -33,8 +33,12 @@ create_tables()
 @app.route('/')
 def home():
     conn = get_db()
-    posts = conn.execute("SELECT * FROM posts ORDER BY id DESC").fetchall()
-    return render_template("home.html", posts=posts)
+    posts = conn.execute('''SELECT posts.id, posts.title, posts.content, posts.user_id,
+                                    posts.date, users.username
+                             FROM posts
+                             JOIN users ON posts.user_id = users.id
+                             ORDER BY posts.id DESC''').fetchall()
+    return render_template("home.html", posts=posts, current_user=session.get('user_id'))
 
 # Register
 @app.route('/register', methods=['GET','POST'])
@@ -113,6 +117,9 @@ def edit(id):
     if post is None:
         return redirect('/')
 
+    if post[3] != session['user_id']:
+        return "You don't have permission to edit this post.", 403
+
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -127,7 +134,18 @@ def edit(id):
 # Delete Post
 @app.route('/delete/<int:id>')
 def delete(id):
+    if 'user_id' not in session:
+        return redirect('/login')
+
     conn = get_db()
+    post = conn.execute("SELECT * FROM posts WHERE id=?", (id,)).fetchone()
+
+    if post is None:
+        return redirect('/')
+
+    if post[3] != session['user_id']:
+        return "You don't have permission to delete this post.", 403
+
     conn.execute("DELETE FROM posts WHERE id=?", (id,))
     conn.commit()
     return redirect('/')

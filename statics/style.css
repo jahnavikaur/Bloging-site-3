@@ -124,6 +124,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 .entry-body { color: var(--ink-soft); margin: 0 0 0.75rem; }
 
+.entry-byline {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.75rem;
+}
+
 .entry-edit {
   font-family: var(--font-mono);
   font-size: 0.75rem;
