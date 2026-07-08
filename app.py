@@ -101,6 +101,29 @@ def create():
 
     return render_template("create.html")
 
+# Edit Post
+@app.route('/edit/<int:id>', methods=['GET','POST'])
+def edit(id):
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    conn = get_db()
+    post = conn.execute("SELECT * FROM posts WHERE id=?", (id,)).fetchone()
+
+    if post is None:
+        return redirect('/')
+
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+
+        conn.execute("UPDATE posts SET title=?, content=?, date=? WHERE id=?",
+                     (title,content,datetime.now().strftime('%b %d, %Y · %I:%M %p'),id))
+        conn.commit()
+        return redirect('/')
+
+    return render_template("edit.html", post=post)
+
 # Delete Post
 @app.route('/delete/<int:id>')
 def delete(id):

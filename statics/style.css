@@ -124,6 +124,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 .entry-body { color: var(--ink-soft); margin: 0 0 0.75rem; }
 
+.entry-edit {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--forest);
+  letter-spacing: 0.03em;
+  margin-right: 1rem;
+}
+
 .entry-delete {
   font-family: var(--font-mono);
   font-size: 0.75rem;
