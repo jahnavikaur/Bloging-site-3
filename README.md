@@ -75,8 +75,6 @@ Then open **http://127.0.0.1:5000** — register an account, log in, and start w
 
 Things this ledger could grow into, roughly in order of "quick win" → "genuinely advanced":
 
-- [ ] Edit existing posts (currently create/delete only)
-- [ ] Show the author's name on each post + restrict delete/edit to the post's own author
 - [ ] Individual post pages (`/post/<id>`) with shareable URLs
 - [ ] Comments and likes
 - [ ] Tags/categories + a search bar
